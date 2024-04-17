@@ -1,7 +1,6 @@
-import { Contact } from '../Models/Contact.js';
-import { Queue } from '../Models/Queue.js';
+import { Agenda } from '../Models/Agenda.js';
 
-let queue = new Queue();
+let agenda = new Agenda();
 
 document.getElementById("btn_add").addEventListener("click", function() {
     let contactName = document.getElementById("contactName").value;
@@ -11,12 +10,11 @@ document.getElementById("btn_add").addEventListener("click", function() {
         if(number.length != 10){
             alert("Ingrese un número de teléfono de 10 dígitos");
         } else {
-            if (isDuplicate(contactName, number)) {
+            if (agenda.isDuplicate(contactName, number)) {
                 alert("El nombre o el número de teléfono ya están en la lista");
             } else {
-                let contact = new Contact(contactName, number);
-                queue.enqueue(contact);
-                displayContacts();
+                agenda.addContact(contactName, number);
+                agenda.displayContacts();
             }
         }
     } else {
@@ -24,31 +22,7 @@ document.getElementById("btn_add").addEventListener("click", function() {
     }
 });
 
-function isDuplicate(contactName, number) {
-    let currentContact = queue.top;
-    while (currentContact) {
-        if (currentContact.value.name === contactName || currentContact.value.number === number) {
-            return true;
-        }
-        currentContact = currentContact.next;
-    }
-    return false;
-}
-
-
 document.getElementById("btn_delete").addEventListener("click", function() {
-    queue.dequeue();
-    displayContacts();
-})
-
-function displayContacts() {
-    let contactListDiv = document.getElementById("contactList");
-    contactListDiv.innerHTML = "";
-    let currentContact = queue.top;
-    while (currentContact) {
-        let contactItem = document.createElement("div");
-        contactItem.textContent = `Nombre: ${currentContact.value.name}, Número: ${currentContact.value.number}`;
-        contactListDiv.appendChild(contactItem);
-        currentContact = currentContact.next;
-    }
-}
+    agenda.deleteContact();
+    agenda.displayContacts();
+});
